@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace Adb
 {
-    class Program
+    public static class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             var adb = new Adb();
             adb.LogReceived += Adb_LogReceived;

@@ -1,11 +1,8 @@
-﻿using System;
-
+﻿
 using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
+using Android.Runtime;
 
 namespace PerformanceLoggerXamairn.Droid
 {
@@ -15,7 +12,7 @@ namespace PerformanceLoggerXamairn.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             Logger.SetProvider(new AndroidLogger());
-            
+
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
@@ -29,7 +26,7 @@ namespace PerformanceLoggerXamairn.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Logger.Step(reference);
 
-            LoadApplication(new App());
+            this.LoadApplication(new App());
             Logger.Stop(reference);
 
             Logger.WriteLine("HelloWriteLine");

@@ -10,11 +10,13 @@ namespace Adb
     public class Adb : IDisposable
     {
         private const string androidHome = "ANDROID_HOME";
-        private static Process logCatProcess;
+        private Process logCatProcess;
+        public event EventHandler<string> LogReceived;
 
         public Adb()
         {
             var adbPath = this.GetAdbPath();
+
             var logProcessInfo = new ProcessStartInfo();
             logProcessInfo.CreateNoWindow = true;
             logProcessInfo.UseShellExecute = false;
@@ -25,14 +27,13 @@ namespace Adb
             logProcessInfo.WindowStyle = ProcessWindowStyle.Hidden;
             logProcessInfo.Arguments = "logcat -T 1";
 
-            logCatProcess = Process.Start(logProcessInfo);
-            logCatProcess.ErrorDataReceived += this.LogCatProcess_ErrorDataReceived;
-            logCatProcess.OutputDataReceived += this.LogCatProcess_OutputDataReceived;
-            logCatProcess.BeginErrorReadLine();
-            logCatProcess.BeginOutputReadLine();
+            this.logCatProcess = Process.Start(logProcessInfo);
+            this.logCatProcess.ErrorDataReceived += this.LogCatProcess_ErrorDataReceived;
+            this.logCatProcess.OutputDataReceived += this.LogCatProcess_OutputDataReceived;
+            this.logCatProcess.BeginErrorReadLine();
+            this.logCatProcess.BeginOutputReadLine();
         }
 
-        public event EventHandler<string> LogReceived;
         public string FilterName { get; set; }
         public List<string> LogsList => new List<string>();
 
@@ -80,16 +81,16 @@ namespace Adb
 
         private void StopLogCatProcess()
         {
-            if (logCatProcess == null)
+            if (this.logCatProcess == null)
             {
                 return;
             }
 
             try
             {
-                if (!logCatProcess.HasExited)
+                if (!this.logCatProcess.HasExited)
                 {
-                    logCatProcess.Kill();
+                    this.logCatProcess.Kill();
                 }
             }
             catch (InvalidOperationException) { } // Just ignore
@@ -97,10 +98,10 @@ namespace Adb
             catch (NotSupportedException) { } // Just ignore
             finally
             {
-                logCatProcess.ErrorDataReceived -= this.LogCatProcess_ErrorDataReceived;
-                logCatProcess.OutputDataReceived -= this.LogCatProcess_OutputDataReceived;
-                logCatProcess.Dispose();
-                logCatProcess = null;
+                this.logCatProcess.ErrorDataReceived -= this.LogCatProcess_ErrorDataReceived;
+                this.logCatProcess.OutputDataReceived -= this.LogCatProcess_OutputDataReceived;
+                this.logCatProcess.Dispose();
+                this.logCatProcess = null;
             }
         }
 
