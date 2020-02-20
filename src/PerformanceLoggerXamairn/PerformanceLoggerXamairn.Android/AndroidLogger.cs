@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Linq;
 
 namespace PerformanceLoggerXamairn.Droid
 {
@@ -20,6 +21,7 @@ namespace PerformanceLoggerXamairn.Droid
         private const string stepStr = "Step ";
         private const string stoppStr = "Stop ";
         private const string msStr = " ms.";
+
         private static readonly Dictionary<string, Stopwatch> stopwatches = new Dictionary<string, Stopwatch>();
 
         public void Start(string reference, string message, string path, string member, int? lineNumber)
@@ -48,7 +50,18 @@ namespace PerformanceLoggerXamairn.Droid
 
         public void WriteLine(string message, string path, string member, int? lineNumber)
         {
-            Android.Util.Log.Debug(LogerTag, $"{DateTimeOffset.Now.ToString("HH:mm:ss.FFF"),-12}, T:{Thread.CurrentThread.ManagedThreadId,-3} {path} {member} {lineNumber} {message}");
+            Android.Util.Log.Debug(LogerTag, $"T:{Thread.CurrentThread.ManagedThreadId,-3} {GetNicePath(path)} {member} {lineNumber} {message}");
+        }
+
+        private static string GetNicePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return path;
+            }
+
+            var splitted = path.Split('/').Reverse().Take(3);
+            return string.Join('.', splitted);
         }
     }
 }
