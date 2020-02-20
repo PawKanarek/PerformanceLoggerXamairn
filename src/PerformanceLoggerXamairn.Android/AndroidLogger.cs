@@ -16,7 +16,7 @@ namespace PerformanceLoggerXamairn.Droid
 {
     public class AndroidLogger : ILoggerProvider
     {
-        private const string LogerTag = "Koptytko";
+        private const string LogerTag = "DevLogger";
         private const string startStr = "Start ";
         private const string stepStr = "Step ";
         private const string stoppStr = "Stop ";
@@ -50,7 +50,7 @@ namespace PerformanceLoggerXamairn.Droid
 
         public void WriteLine(string message, string path, string member, int? lineNumber)
         {
-            Android.Util.Log.Debug(LogerTag, $"T:{Thread.CurrentThread.ManagedThreadId,-3} {GetNicePath(path)} {member} {lineNumber} {message}");
+            Android.Util.Log.Debug(LogerTag, $"T:{Thread.CurrentThread.ManagedThreadId,-3} {GetNicePath(path)}:{lineNumber} {member}() {message}");
         }
 
         private static string GetNicePath(string path)
@@ -60,7 +60,7 @@ namespace PerformanceLoggerXamairn.Droid
                 return path;
             }
 
-            var splitted = path.Split('/').Reverse().Take(3);
+            var splitted = path.Split('\\').Reverse().Take(3).Reverse();
             return string.Join('.', splitted);
         }
     }

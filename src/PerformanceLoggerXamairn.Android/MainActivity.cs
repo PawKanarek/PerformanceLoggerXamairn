@@ -11,25 +11,24 @@ namespace PerformanceLoggerXamairn.Droid
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            Logger.SetProvider(new AndroidLogger());
+            Logger.SetProvider(new AndroidLogger()); // Initalize Logger
 
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
-            Logger.Start(out var reference);
+            Logger.Start(out var reference); // Start Measuring shit
             base.OnCreate(savedInstanceState);
-            Logger.Step(reference);
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-            Logger.Step(reference);
+            Logger.Step(reference); // another step
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            Logger.Step(reference);
+            Logger.Step(reference); // another step
 
             this.LoadApplication(new App());
-            Logger.Stop(reference);
+            Logger.Stop(reference); // stop measuring
 
-            Logger.WriteLine("HelloWriteLine");
+            Logger.WriteLine("HelloWriteLine"); // you can also use WriteLine
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

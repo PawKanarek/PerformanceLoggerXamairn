@@ -49,7 +49,6 @@ namespace LogcatOutput
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             await LogcatOutput.InitializeAsync(this);
         }
-
         #endregion
     }
 }

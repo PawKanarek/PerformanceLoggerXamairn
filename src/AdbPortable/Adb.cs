@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace Adb
+namespace AdbPortable
 {
     public class Adb : IDisposable
     {
@@ -35,7 +35,6 @@ namespace Adb
         }
 
         public string FilterName { get; set; }
-        public List<string> LogsList => new List<string>();
 
         private void LogCatProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
@@ -55,17 +54,13 @@ namespace Adb
 
         private void AddLog(string log)
         {
-            lock (this.LogsList)
+            if (!string.IsNullOrWhiteSpace(this.FilterName) && log.IndexOf(this.FilterName, StringComparison.OrdinalIgnoreCase) < 0) //ignoring case without linq
             {
-                if (!string.IsNullOrWhiteSpace(this.FilterName) && !log.Contains(this.FilterName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return;
-                }
-
-                this.LogsList.Add(log);
-                EventHandler<string> handler = this.LogReceived;
-                handler?.Invoke(this, log);
+                return;
             }
+
+            EventHandler<string> handler = this.LogReceived;
+            handler?.Invoke(this, log);
         }
 
         private string GetAdbPath()

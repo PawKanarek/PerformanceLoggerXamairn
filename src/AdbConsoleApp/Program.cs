@@ -1,7 +1,8 @@
-﻿using System;
+﻿using AdbPortable;
+using System;
 using System.Threading.Tasks;
 
-namespace Adb
+namespace AdbConsoleApp
 {
     public static class Program
     {
