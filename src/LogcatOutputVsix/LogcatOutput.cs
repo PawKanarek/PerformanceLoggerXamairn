@@ -8,9 +8,6 @@ using Task = System.Threading.Tasks.Task;
 
 namespace LogcatOutput
 {
-    /// <summary>
-    /// Command handler
-    /// </summary>
     internal sealed class LogcatOutput
     {
         public const int CommandId = 0x0100;
@@ -71,7 +68,7 @@ namespace LogcatOutput
                     this.pane.Clear();
                     this.pane.OutputString("State: ADB Active\n");
                     this.state = State.Active;
-
+                    this.ReleaseAdbProcess();
                     this.adb = new Adb();
                     this.adb.LogReceived += this.Adb_LogReceived;
 
@@ -79,26 +76,32 @@ namespace LogcatOutput
                 case State.Active:
 
                     this.adb.FilterName = "DevLogger";
-
                     this.pane.Clear();
                     this.pane.OutputString("State: ADB Active with Filter: 'DevLogger'\n");
-
                     this.state = State.ActiveWithFilter;
 
                     break;
                 case State.ActiveWithFilter:
 
-                    this.adb.LogReceived -= this.Adb_LogReceived;
-                    this.adb.Dispose();
-                    this.adb = null;
-
+                    this.ReleaseAdbProcess();
                     this.pane.Clear();
                     this.pane.OutputString("State: ADB Disabled \n");
-
                     this.state = State.Disabled;
 
                     break;
             }
+        }
+
+        public void ReleaseAdbProcess()
+        {
+            if (this.adb == null)
+            {
+                return;
+            }
+
+            this.adb.LogReceived -= this.Adb_LogReceived;
+            this.adb.Dispose();
+            this.adb = null;
         }
 
         private async void Adb_LogReceived(object sender, string e)

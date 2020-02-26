@@ -28,12 +28,7 @@ namespace LogcatOutput
     [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class LogcatOutputPackage : AsyncPackage
     {
-        /// <summary>
-        /// LogcatOutputPackage GUID string.
-        /// </summary>
         public const string PackageGuidString = "03e93c02-9cf9-4aed-a603-aba4d9210d5a";
-
-        #region Package Members
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -44,11 +39,14 @@ namespace LogcatOutput
         /// <returns>A task representing the async work of package initialization, or an already completed task if there is none. Do not return null from this method.</returns>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            // When initialized asynchronously, the current thread may be a background thread at this point.
-            // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             await LogcatOutput.InitializeAsync(this);
         }
-        #endregion
+
+        protected override int QueryClose(out bool canClose)
+        {
+            LogcatOutput.Instance.ReleaseAdbProcess();
+            return base.QueryClose(out canClose);
+        }
     }
 }
