@@ -18,7 +18,6 @@ namespace LogcatOutput
         private Guid outputWindowGuid;
         private IVsOutputWindow outputWindow;
         private IVsOutputWindowPane pane;
-        private State state;
 
         private LogcatOutput(AsyncPackage package, OleMenuCommandService commandService)
         {
@@ -48,47 +47,33 @@ namespace LogcatOutput
         private async void Execute(object sender, EventArgs e)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            switch (this.state)
+
+            if (this.outputWindowGuid == Guid.Empty)
             {
-                case State.Disabled:
+                this.outputWindowGuid = new Guid();
+            }
 
-                    if (this.outputWindowGuid == Guid.Empty)
-                    {
-                        this.outputWindowGuid = new Guid();
-                    }
+            if (this.outputWindow == null)
+            {
+                this.outputWindow = await this.ServiceProvider.GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
+                Assumes.Present(this.outputWindow);
+                this.outputWindow.CreatePane(ref this.outputWindowGuid, "LogcatOutput", Convert.ToInt32(true), Convert.ToInt32(false));
+                this.outputWindow.GetPane(ref this.outputWindowGuid, out this.pane);
+            }
 
-                    if (this.outputWindow == null)
-                    {
-                        this.outputWindow = await this.ServiceProvider.GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
-                        Assumes.Present(this.outputWindow);
-                        this.outputWindow.CreatePane(ref this.outputWindowGuid, "LogcatOutput", Convert.ToInt32(true), Convert.ToInt32(false));
-                        this.outputWindow.GetPane(ref this.outputWindowGuid, out this.pane);
-                    }
+            this.pane.Clear();
+            this.pane.OutputString("LogcatOutput Activated\n");
 
-                    this.pane.Clear();
-                    this.pane.OutputString("State: ADB Active\n");
-                    this.state = State.Active;
-                    this.ReleaseAdbProcess();
-                    this.adb = new Adb();
-                    this.adb.LogReceived += this.Adb_LogReceived;
-
-                    break;
-                case State.Active:
-
-                    this.adb.FilterName = "DevLogger";
-                    this.pane.Clear();
-                    this.pane.OutputString("State: ADB Active with Filter: 'DevLogger'\n");
-                    this.state = State.ActiveWithFilter;
-
-                    break;
-                case State.ActiveWithFilter:
-
-                    this.ReleaseAdbProcess();
-                    this.pane.Clear();
-                    this.pane.OutputString("State: ADB Disabled \n");
-                    this.state = State.Disabled;
-
-                    break;
+            this.ReleaseAdbProcess();
+            try
+            {
+                this.adb = new Adb();
+                this.adb.LogReceived += this.Adb_LogReceived;
+                this.adb.FilterName = "DevLogger";
+            }
+            catch (AdbInitalizeException ex)
+            {
+                this.pane.OutputString(ex.Message);
             }
         }
 
@@ -114,13 +99,6 @@ namespace LogcatOutput
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             // Retrieve the new pane.
             this.pane.OutputString(e + "\n");
-        }
-
-        private enum State
-        {
-            Disabled,
-            Active,
-            ActiveWithFilter
         }
     }
 }

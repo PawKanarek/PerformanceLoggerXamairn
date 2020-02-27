@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -9,13 +8,20 @@ namespace AdbPortable
 {
     public class Adb : IDisposable
     {
-        private const string androidHome = "ANDROID_HOME";
         private Process logCatProcess;
         public event EventHandler<string> LogReceived;
 
+        /// <summary>
+        /// Inializes new adb process
+        /// </summary>
+        /// <exception cref="AdbInitalizeException">Thrown when couldnt initalize adb process</exception>
         public Adb()
         {
             var adbPath = this.GetAdbPath();
+            if (string.IsNullOrEmpty(adbPath))
+            {
+                throw new AdbInitalizeException($"Could not find any valid path where adb.exe exists. Add directory that contains Android platform-tool adb.exe to PATH or ANDROID_HOME environment variable");
+            }
 
             var logProcessInfo = new ProcessStartInfo();
             logProcessInfo.CreateNoWindow = true;
@@ -27,11 +33,26 @@ namespace AdbPortable
             logProcessInfo.WindowStyle = ProcessWindowStyle.Hidden;
             logProcessInfo.Arguments = "logcat -T 1";
 
-            this.logCatProcess = Process.Start(logProcessInfo);
-            this.logCatProcess.ErrorDataReceived += this.LogCatProcess_ErrorDataReceived;
-            this.logCatProcess.OutputDataReceived += this.LogCatProcess_OutputDataReceived;
-            this.logCatProcess.BeginErrorReadLine();
-            this.logCatProcess.BeginOutputReadLine();
+            try
+            {
+                this.logCatProcess = Process.Start(logProcessInfo);
+            }
+            catch (FileNotFoundException ex)
+            {
+                throw new AdbInitalizeException($"Could not start adb process on path {adbPath}", ex);
+            }
+            catch (Win32Exception ex)
+            {
+                throw new AdbInitalizeException($"Could not start adb process on path {adbPath}", ex);
+            }
+
+            if (this.logCatProcess != null)
+            {
+                this.logCatProcess.ErrorDataReceived += this.LogCatProcess_ErrorDataReceived;
+                this.logCatProcess.OutputDataReceived += this.LogCatProcess_OutputDataReceived;
+                this.logCatProcess.BeginErrorReadLine();
+                this.logCatProcess.BeginOutputReadLine();
+            }
         }
 
         public string FilterName { get; set; }
@@ -59,19 +80,57 @@ namespace AdbPortable
                 return;
             }
 
-            EventHandler<string> handler = this.LogReceived;
+            var handler = this.LogReceived;
             handler?.Invoke(this, log);
         }
 
         private string GetAdbPath()
         {
-            var path = Environment.GetEnvironmentVariable(androidHome);
+            var path = Environment.GetEnvironmentVariable("ANDROID_HOME");
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException($"There is no {androidHome} environment variable");
+                path = @"C:\Program Files (x86)\Android\android-sdk";
             }
 
-            return Path.Combine(path, Path.Combine("platform-tools", "adb"));
+            path = this.getPlatformToolsPath(path);
+
+            if (File.Exists(path))
+            {
+                return path;
+            }
+            else
+            {
+                var pathVariables = Environment.GetEnvironmentVariable("PATH");
+                foreach (var item in pathVariables.Split(Path.PathSeparator))
+                {
+                    if (File.Exists(path))
+                    {
+                        return path;
+                    }
+                    else
+                    {
+                        path = this.getPlatformToolsPath(item);
+                        if (File.Exists(path))
+                        {
+                            return path;
+                        }
+                        else
+                        {
+                            path = Path.Combine(item, "adb.exe");
+                            if (File.Exists(path))
+                            {
+                                return path;
+                            }
+                        }
+                    }
+                }
+            }
+            return string.Empty;
+        }
+
+        private string getPlatformToolsPath(string parentPath)
+        {
+            return Path.Combine(parentPath, Path.Combine("platform-tools", "adb.exe"));
         }
 
         private void StopLogCatProcess()
@@ -124,4 +183,23 @@ namespace AdbPortable
         }
         #endregion
     }
+
+    /// <summary>
+    /// Thrown when couldnt initalize adb process
+    /// </summary>
+    public class AdbInitalizeException : Exception
+    {
+        public AdbInitalizeException() : base()
+        {
+        }
+
+        public AdbInitalizeException(string message) : base(message)
+        {
+        }
+
+        public AdbInitalizeException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+    }
+
 }
