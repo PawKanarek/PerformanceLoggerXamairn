@@ -5,6 +5,9 @@ using PerformanceLoggerPortable;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text;
+using Constants = PerformanceLoggerPortable.Constants;
 using Task = System.Threading.Tasks.Task;
 
 namespace PerformanceLoggerVsix
@@ -45,7 +48,7 @@ namespace PerformanceLoggerVsix
             Instance = new LogcatOutput(package, commandService);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "MenuCommand uses event handler without option of async Task.")]
+        [SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "MenuCommand uses event handler without option of async Task.")]
         private async void Execute(object sender, EventArgs e)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -91,7 +94,7 @@ namespace PerformanceLoggerVsix
         }
 
         [SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "Event Listener can be async")]
-        private async void Adb_LogReceived(object sender, string e)
+        private async void Adb_LogReceived(object sender, string log)
         {
             if (this.outputWindow == null)
             {
@@ -99,9 +102,40 @@ namespace PerformanceLoggerVsix
             }
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            // Retrieve the new pane.
-            //this.pane.OutputString(e + "\n");
-            this.pane.OutputTaskItemString(e + Environment.NewLine, VSTASKPRIORITY.TP_NORMAL, VSTASKCATEGORY.CAT_BUILDCOMPILE, "MergeUi", 0, "C:\\Bitbucket\\PerformanceLoggerXamairn\\src\\PerformanceLoggerXamairn\\MainPage.xaml.cs", 12, e);
+
+            var success = false;
+            try
+            {
+                // well formatted log shoud look like this:
+                // *adb prefix messages* *logcat Tag* *FileTag**Filename*;*LineNumber**FileTag* *Thread info* *user message*
+                // real world example
+                // log = "03-03 22:44:00.856 D/DevLogger(10813): <'File'>C:\App\Activity.cs;19<'File'>OnCreate() T:1. Hello World"
+                var logcatMessage = log.Split(new string[] { Constants.FileTag }, StringSplitOptions.None);
+                if (logcatMessage.Length == 3)
+                {
+                    var pathPart = logcatMessage[1].Split(Constants.LineTag);       // "C:\App\Activity.cs;19"                      -> string[] { "C:\App\Activity.cs", "19" }
+
+                    var sb = new StringBuilder(logcatMessage[0].Split(' ')[1]);     // "03-03 22:44:00.856 D/DevLogger(10813): "    -> "22:44:00.856"
+                    sb.Append(' ');
+                    sb.Append(pathPart[0].Split('\\').Last());                      // "C:\App\Activity.cs"                         -> "Activity.cs"
+                    sb.Append(':');
+                    sb.Append(pathPart[1]);                                         // "19"
+                    sb.Append(' ');
+                    sb.Append(logcatMessage[2]);                                    //OnCreate() T:1. Hello World
+                    sb.Append(Environment.NewLine);
+                    this.pane.OutputTaskItemString(sb.ToString(), VSTASKPRIORITY.TP_NORMAL, VSTASKCATEGORY.CAT_BUILDCOMPILE, string.Empty, 0, pathPart[0], Convert.ToUInt32(pathPart[1]) - 1, logcatMessage[2]);
+                    success = true;
+                }
+            }
+            catch (Exception)
+            {
+                success = false;
+            }
+
+            if (!success)
+            {
+                this.pane.OutputString(log + Environment.NewLine);
+            }
         }
     }
 }

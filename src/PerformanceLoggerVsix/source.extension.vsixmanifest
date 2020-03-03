@@ -2,7 +2,7 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
         <Identity Id="LogcatOutput.d173c13d-febd-4891-b4fc-8ee02cdfa77e" Version="1.0" Language="en-US" Publisher="paw.kanarek" />
-        <DisplayName>LogcatOutput</DisplayName>
+        <DisplayName>PerformanceLogger Output Window</DisplayName>
         <Description xml:space="preserve">Helps with debugging Xamarin. Usage: Toggle Tools: -&gt; LogcatOutput</Description>
         <Preview>true</Preview>
     </Metadata>
