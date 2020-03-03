@@ -16,17 +16,17 @@ namespace PerformanceLoggerXamairn.Droid
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
-            Logger.Start(out var reference); // Start Measuring shit
+            Logger.Start(out var reference); // Start Measuring
             base.OnCreate(savedInstanceState);
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-            Logger.Step(reference); // another step
+            Logger.Step(reference);
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            Logger.Step(reference); // another step
+            Logger.Step(reference);
 
             this.LoadApplication(new App());
-            Logger.Stop(reference); // stop measuring
+            Logger.Stop(reference); 
 
             Logger.WriteLine("HelloWriteLine"); // you can also use WriteLine
         }
