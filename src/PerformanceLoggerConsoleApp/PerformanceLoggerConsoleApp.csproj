@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdbPortable\AdbPortable.csproj" />
+    <ProjectReference Include="..\PerformanceLoggerPortable\PerformanceLoggerPortable.csproj" />
   </ItemGroup>
 
 </Project>

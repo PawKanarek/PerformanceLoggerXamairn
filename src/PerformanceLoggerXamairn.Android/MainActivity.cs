@@ -11,7 +11,7 @@ namespace PerformanceLoggerXamairn.Droid
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            Logger.SetProvider(new AndroidLogger()); // Initalize Logger
+            Logger.SetProvider(new AndroidLoggerProvider()); // Initalize Logger
 
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
@@ -31,10 +31,9 @@ namespace PerformanceLoggerXamairn.Droid
             Logger.WriteLine("HelloWriteLine"); // you can also use WriteLine
         }
 
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }

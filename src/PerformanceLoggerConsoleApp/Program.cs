@@ -1,8 +1,8 @@
-﻿using AdbPortable;
+﻿using PerformanceLoggerPortable;
 using System;
 using System.Threading.Tasks;
 
-namespace AdbConsoleApp
+namespace PerformanceLoggerConsoleApp
 {
     public static class Program
     {
