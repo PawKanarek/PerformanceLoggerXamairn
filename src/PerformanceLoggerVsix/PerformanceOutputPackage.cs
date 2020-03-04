@@ -24,9 +24,9 @@ namespace PerformanceLoggerVsix
     /// </para>
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid(LogcatOutputPackage.PackageGuidString)]
+    [Guid(PerformanceOutputPackage.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    public sealed class LogcatOutputPackage : AsyncPackage
+    public sealed class PerformanceOutputPackage : AsyncPackage
     {
         public const string PackageGuidString = "03e93c02-9cf9-4aed-a603-aba4d9210d5a";
 
@@ -40,12 +40,12 @@ namespace PerformanceLoggerVsix
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            await LogcatOutput.InitializeAsync(this);
+            await PerformanceOutput.InitializeAsync(this);
         }
 
         protected override int QueryClose(out bool canClose)
         {
-            LogcatOutput.Instance.ReleaseAdbProcess();
+            PerformanceOutput.Instance.ReleaseAdbProcess();
             return base.QueryClose(out canClose);
         }
     }

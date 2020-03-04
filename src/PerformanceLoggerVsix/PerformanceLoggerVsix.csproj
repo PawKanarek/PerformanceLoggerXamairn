@@ -45,9 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="LogcatOutput.cs" />
+    <Compile Include="PerformanceOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LogcatOutputPackage.cs" />
+    <Compile Include="PerformanceOutputPackage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="source.extension.vsixmanifest">
@@ -68,12 +68,20 @@
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.4.1057" />
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="LogcatOutputPackage.vsct">
+    <VSCTCompile Include="PerformanceOutputPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="MIT_License.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="PerformanceOutputLogo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Preview.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

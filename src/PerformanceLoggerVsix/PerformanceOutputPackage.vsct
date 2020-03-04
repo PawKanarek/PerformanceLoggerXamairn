@@ -22,7 +22,7 @@
 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidLogcatOutputPackage">
+  <Commands package="guidPerformanceOutputPackage">
     <!-- Inside this section we have different sub-sections: one for the menus, another
     for the menu groups, one for the buttons (the actual commands), one for the combos
     and the last one for the bitmaps used. Each element is identified by a command id that
@@ -36,7 +36,7 @@
          group as the part of a menu contained between two lines. The parent of a group
          must be a menu. -->
     <Groups>
-      <Group guid="guidLogcatOutputPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+      <Group guid="guidPerformanceOutputPackageCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
       </Group>
     </Groups>
@@ -52,11 +52,11 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidLogcatOutputPackageCmdSet" id="LogcatOutputId" priority="0x0100" type="Button">
-        <Parent guid="guidLogcatOutputPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidPerformanceOutputPackageCmdSet" id="PerformanceOutputId" priority="0x0100" type="Button">
+        <Parent guid="guidPerformanceOutputPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Invoke LogcatOutput</ButtonText>
+          <ButtonText>Performance Output</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -74,12 +74,12 @@
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidLogcatOutputPackage" value="{03e93c02-9cf9-4aed-a603-aba4d9210d5a}" />
+    <GuidSymbol name="guidPerformanceOutputPackage" value="{03e93c02-9cf9-4aed-a603-aba4d9210d5a}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidLogcatOutputPackageCmdSet" value="{2bfe5ff2-cf9e-4730-8c8b-71e2b58280ee}">
+    <GuidSymbol name="guidPerformanceOutputPackageCmdSet" value="{2bfe5ff2-cf9e-4730-8c8b-71e2b58280ee}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="LogcatOutputId" value="0x0100" />
+      <IDSymbol name="PerformanceOutputId" value="0x0100" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{b01a7b59-fab8-49d2-941d-b196eff9af2c}" >

@@ -12,7 +12,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PerformanceLoggerVsix
 {
-    internal sealed class LogcatOutput
+    internal sealed class PerformanceOutput
     {
         public const int CommandId = 0x0100;
         public static readonly Guid CommandSet = new Guid("2bfe5ff2-cf9e-4730-8c8b-71e2b58280ee");
@@ -23,7 +23,7 @@ namespace PerformanceLoggerVsix
         private IVsOutputWindow outputWindow;
         private IVsOutputWindowPane pane;
 
-        private LogcatOutput(AsyncPackage package, OleMenuCommandService commandService)
+        private PerformanceOutput(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -32,7 +32,7 @@ namespace PerformanceLoggerVsix
             commandService.AddCommand(menuItem);
         }
 
-        public static LogcatOutput Instance
+        public static PerformanceOutput Instance
         {
             get;
             private set;
@@ -45,7 +45,7 @@ namespace PerformanceLoggerVsix
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             var commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new LogcatOutput(package, commandService);
+            Instance = new PerformanceOutput(package, commandService);
         }
 
         [SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "MenuCommand uses event handler without option of async Task.")]
@@ -62,18 +62,18 @@ namespace PerformanceLoggerVsix
             {
                 this.outputWindow = await this.ServiceProvider.GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
                 Assumes.Present(this.outputWindow);
-                this.outputWindow.CreatePane(ref this.outputWindowGuid, "LogcatOutput", Convert.ToInt32(true), Convert.ToInt32(false));
+                this.outputWindow.CreatePane(ref this.outputWindowGuid, "Performance Output", Convert.ToInt32(true), Convert.ToInt32(false));
                 this.outputWindow.GetPane(ref this.outputWindowGuid, out this.pane);
             }
             this.pane.Clear();
-            this.pane.OutputString("LogcatOutput Activated\n");
+            this.pane.OutputString("Performance Output Activated\n");
 
             this.ReleaseAdbProcess();
             try
             {
                 this.adb = new Adb();
                 this.adb.LogReceived += this.Adb_LogReceived;
-                this.adb.FilterName = "DevLogger";
+                this.adb.FilterName = Constants.Tag;
             }
             catch (AdbInitalizeException ex)
             {
