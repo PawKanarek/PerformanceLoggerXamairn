@@ -27,6 +27,9 @@ This will give you this bjuːtɪfʊl output
 01:52:35.150 MainActivity.cs:29 OnCreate() T:1. Stop 456 ms.
 01:52:35.151 MainActivity.cs:31 OnCreate() T:1. HelloWriteLine
 ```
+Real life example 
+
+![example](https://github.com/PawKanarek/PerformanceLoggerXamairn/blob/master/images/Preview.png)
 ##  Visual Studio Extension 
 Visual Studio Extension available here:
 https://marketplace.visualstudio.com/items?itemName=PawKanarek.v1
