@@ -1,5 +1,5 @@
 # PerformanceLoggerXamairn
-Light & Fast Performance Logger for Xamarin.Forms apps with additional extension for Visual Stuido
+Light & Fast logger provider with simple performance measurements for Xamarin.Forms apps with additional extension for Visual Stuido
 
 Example of usage: 
 ```
