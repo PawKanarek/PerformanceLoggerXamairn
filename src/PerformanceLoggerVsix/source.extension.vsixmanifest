@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-  <Metadata>
-    <Identity Id="PerformanceOutput.d173c13d-febd-4891-b4fc-8ee02cdfa77e" Version="1.1" Language="en-US" Publisher="paw.kanarek" />
-    <DisplayName>PerformanceLogger Output Window</DisplayName>
-    <Description xml:space="preserve">Provides easy access to PerformanceLogger messages.  Open with "Tools" -&gt; "Performance Output"</Description>
-    <MoreInfo>https://github.com/PawKanarek/PerformanceLoggerXamairn</MoreInfo>
-    <License>MIT_License.txt</License>
-    <GettingStartedGuide>https://github.com/PawKanarek/PerformanceLoggerXamairn</GettingStartedGuide>
-    <ReleaseNotes>Added on click command in output window. Nicer formating. </ReleaseNotes>
-    <Icon>PerformanceOutputLogo.png</Icon>
-    <PreviewImage>Preview.png</PreviewImage>
-    <Tags>Xamarin, Android, Performance, Logger, Output Window</Tags>
-  </Metadata>
-  <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />
-  </Installation>
-  <Dependencies>
-    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-  </Dependencies>
-  <Prerequisites>
-    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0,17.0)" DisplayName="Visual Studio core editor" />
-  </Prerequisites>
-  <Assets>
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-  </Assets>
+    <Metadata>
+        <Identity Id="PerformanceOutput.d173c13d-febd-4891-b4fc-8ee02cdfa77e" Version="1.1" Language="en-US" Publisher="PawKanarek" />
+        <DisplayName>PerformanceLogger Output Window</DisplayName>
+        <Description xml:space="preserve">Provides easy access to PerformanceLogger messages.  Open with "Tools" -&gt; "Performance Output"</Description>
+        <MoreInfo>https://github.com/PawKanarek/PerformanceLoggerXamairn</MoreInfo>
+        <License>MIT_License.txt</License>
+        <GettingStartedGuide>https://github.com/PawKanarek/PerformanceLoggerXamairn</GettingStartedGuide>
+        <ReleaseNotes>Added on click command in output window. Nicer formating. </ReleaseNotes>
+        <Icon>PerformanceOutputLogo.png</Icon>
+        <PreviewImage>Preview.png</PreviewImage>
+        <Tags>Xamarin, Android, Performance, Logger, Output Window</Tags>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    </Dependencies>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0,17.0)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
 </PackageManifest>
